@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="content-wrapper">
+    <div class="container-xxl container-p-y">
+        <div class="misc-wrapper text-center">
+            <h2 class="mb-2 mx-2"><br><br>간편한 시간표 &amp; 강의별 노트</h2>
+            <h3 class="mb-2 mx-2"><br>무료로 시작하세요!</h3>
+            <p class="mb-4 mx-2">보다 나은 우리의 대학 생활을 위하여</p>
+            <a href="/login" class="btn btn-primary">YOTUNE 시작하기</a>
+            <div class="mt-4">
+                <img src="../static/img/illustrations/girl-doing-yoga-light.png" alt="girl-doing-yoga-light" width="800"
+                    class="img-fluid mx-auto" data-app-dark-img="illustrations/girl-doing-yoga-dark.png"
+                    data-app-light-img="illustrations/girl-doing-yoga-light.png" />
+                <h2 class="mb-2 mx-2"><br><br></h2>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-5">
+        <div class="col-md-6 col-lg-4 mb-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">간편한 시간표 편집</h5>
+                    <h6 class="card-subtitle text-muted">
+                        일일히 추가하지 말고 원하는 강의를 찾아 손 쉽게 추가하세요!
+                    </h6>
+                </div>
+                <img class="img-fluid" src="../static/img/elements/TIMETABLE.webp" alt="Card image cap" />
+                <div class="card-body">
+                    <p class="card-text"></p>
+                    <a href="/register" class="card-link">회원가입</a>
+                    <a href="/login" class="card-link">로그인</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4 mb-3">
+            <div class="card h-100">
+                <img class="card-img-top" src="../static/img/elements/NOTE.webp" alt="Card image cap" />
+                <div class="card-body">
+                    <h5 class="card-title">재빠른 노트</h5>
+                    <p class="card-text">
+                        중요한 내용들을 수강 중인 강의에 맞춰 메모하세요!
+                    </p>
+                    <a href="/memo" class="btn btn-outline-primary">유용한 나만의 노트 정리</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4 mb-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">일일히 적지 말고 누르세요</h5>
+                    <h6 class="card-subtitle text-muted">STT 알고리즘이 여러분의 편의를 봐드립니다</h6>
+                    <img class="img-fluid d-flex mx-auto my-4" src="../static/img/elements/STTIMAGE.webp"
+                        alt="Card image cap" />
+                    <p class="card-text">모든 자료를 쉽게 글로 수집, 변환해서 아이디어를 모으고, 생각을 펼치세요</p>
+                    <a href="/introduction" class="card-link">STT 알고리즘에 대해서</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

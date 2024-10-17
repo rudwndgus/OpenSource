@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="card mb-4">
+      <h5 class="card-header">Account setting</h5>
+      <!-- Account -->
+      <div class="card-body">
+        <div class="d-flex align-items-start align-items-sm-center gap-4">
+          <div class="button-wrapper">
+            <img src="../static/img/avatars/basic_profile.jpg" height="100px" width="100px" />
+          </div>
+
+        </div>
+      </div>
+      <hr class="my-0">
+      <div class="card-body">
+        <form id="formAccountSettings" method="POST" onsubmit="return false">
+          <div class="row">
+            <div class="mb-3 col-md-6">
+              <label for="user_id" class="form-label">ID</label>
+              <input class="form-control" type="text" id="user_id" name="user_id" value="{{ session['user_id'] }}">
+            </div>
+            <div class="mb-3 col-md-6">
+              <label for="birthdate" class="form-label">Birthdate</label>
+              <input class="form-control" type="text" name="birthdate" id="birthdate" value="{{ session['birthdate'] }}">
+            </div>
+            <div class="mb-3 col-md-6">
+              <label for="Username" class="form-label">Name</label>
+              <input class="form-control" type="text" id="Username" name="Username" value="{{ session['name'] }}">
+            </div>
+            <div class="mb-3 col-md-6">
+              <label for="university" class="form-label">University</label>
+              <input class="form-control" type="text" name="university" id="university" value="{{ session['university'] }}">
+            </div>
+            <div class="mb-3 col-md-6">
+              <label for="department" class="form-label">Department</label>
+              <input class="form-control" type="text" id="department" name="department" value="{{ session['department'] }}">
+            </div>
+            <div class="mb-3 col-md-6">
+              <label for="student_id" class="form-label">Student ID</label>
+              <input type="text" class="form-control" id="student_id" name="student_id" value="{{ session['student_id'] }}">
+            </div>
+          </div>
+          <div class="mt-2">
+            <button type="submit" class="btn btn-primary me-2">Save changes</button>
+            <button type="reset" class="btn btn-outline-secondary">Cancel</button>
+          </div>
+        </form>
+      </div>
+      <!-- /Account -->
+    </div>
+  </div>
+</div>
+
+{% endblock %}

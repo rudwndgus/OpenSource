@@ -1,0 +1,288 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="row">
+  <div class="col-md-18 col-lg-12 order-0 mb-12">
+    <div class="card h-100">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="card-header">
+          <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="semesterDropdown"
+              data-bs-toggle="dropdown" aria-expanded="false">
+              {{ now_sem }}
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="semesterDropdown">
+              {% for semester in sem_data %}
+              <li><a class="dropdown-item" href="#" onclick="selectSemester('{{ semester }}')">{{ semester }}</a></li>
+              {% endfor %}
+            </ul>
+          </div>
+        </h5>
+        {% if courses|length > 0 %}
+        <button type="button" class="btn btn-danger mt-3 me-2" id="deleteMemoButton" onclick="confirmDeleteMemos()"
+          style="display: none;">Delete Memo</button>
+        <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#addNoteModal">Add
+          Note</button>
+        {% endif %}
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <!-- Custom content with heading -->
+          <div class="col-lg-12 mb-4 mb-xl-0">
+            <div class="mt-3">
+              <div class="row">
+                <div class="col-md-4 col-12 mb-3 mb-md-0">
+                  <div class="list-group">
+                    {% if courses|length > 0 %}
+                    {% for idx, course in enumerate(courses["course_name"]) %}
+                    <input type="hidden">
+                    <a class="list-group-item list-group-item-action {% if loop.first %}active{% endif %}"
+                      id="list-course-{{ idx }}-list" data-bs-toggle="list" href="#list-course-{{ idx }}"
+                      onclick="setSelectedCourse('{{ course }}', '{{ courses.course_id[idx] }}')">{{ course }}</a>
+                    {% endfor %}
+                    {% else %}
+                    <div></div>
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="col-md-8 col-12">
+                  <div class="tab-content p-0">
+                    {% if courses|length > 0 %}
+                    {% for course_idx, course in enumerate(courses["course_name"]) %}
+                    <div class="tab-pane fade {% if loop.first %}show active{% endif %}"
+                      id="list-course-{{ course_idx }}">
+                      <div class="card accordion" id="accordion-{{ course_idx }}">
+                        {% set has_memos = false %}
+                        {% for memo_idx, memo in enumerate(memos) %}
+                        {% if memo["course_id"] == courses['course_id'][course_idx] %}
+                        {% set has_memos = true %}
+                        <div class="accordion-item">
+                          <h2 class="accordion-header" id="heading-{{ course_idx }}-{{ memo_idx }}">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                              data-bs-target="#collapse-{{ course_idx }}-{{ memo_idx }}" aria-expanded="false"
+                              aria-controls="collapse-{{ course_idx }}-{{ memo_idx }}">
+                              {{ memo["note_title"] }}
+                              <input type="checkbox" class="form-check-input ms-3 large-checkbox"
+                                id="memoCheck-{{ memo.note_id }}" onclick="toggleDeleteButton()">
+                            </button>
+                          </h2>
+                          <div id="collapse-{{ course_idx }}-{{ memo_idx }}" class="accordion-collapse collapse"
+                            aria-labelledby="heading-{{ course_idx }}-{{ memo_idx }}"
+                            data-bs-parent="#accordion-{{ course_idx }}">
+                            <div class="accordion-body">
+                              {{ memo["note_content"] }}
+                            </div>
+                          </div>
+                        </div>
+                        <style>
+                          .large-checkbox {
+                            width: 1.5rem;
+                            height: 1.5rem;
+                          }
+                        </style>
+                        {% endif %}
+                        {% endfor %}
+                        {% if not has_memos %}
+                        {% endif %}
+                      </div>
+                      <br>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 메모 추가 모달 -->
+        <div class="modal fade" id="addNoteModal" tabindex="-1" aria-labelledby="addNoteModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg modal-dialog-scrollable custom-modal"> <!-- custom-modal 클래스 추가 -->
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="addNoteModalLabel">Add Note</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <form id="noteForm">
+                  <div class="mb-3">
+                    <label for="noteTitle" class="form-label">Title</label>
+                    <input type="text" class="form-control" id="noteTitle" required>
+                  </div>
+                  <div class="mb-3">
+                    <label for="noteContent" class="form-label">Content</label>
+                    <textarea class="form-control" id="noteContent" rows="10" required></textarea> <!-- rows 값 증가 -->
+                  </div>
+                  <input type="hidden" id="selectedCourse" name="course">
+                  <input type="hidden" id="selectedCourseId" name="course_id"> <!-- Global hidden input -->
+                  <div class="mb-3">
+                    <label for="audioFile" class="form-label">Upload Audio File</label>
+                    <input type="file" class="form-control" id="audioFile" accept="audio/*">
+                  </div>
+                  <button type="button" class="btn btn-secondary" onclick="uploadAudioFile()">STT 변환하기</button>
+                  <button type="submit" class="btn btn-primary">Add Note</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <style>
+          .custom-modal .modal-dialog {
+            max-height: 80vh;
+            /* 모달의 최대 높이를 설정합니다. */
+          }
+
+          .custom-modal .modal-content {
+            height: 55%;
+            /* 모달 내용의 높이를 100%로 설정합니다. */
+          }
+        </style>
+
+
+        <!--/ Custom content with heading -->
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+  let selectedCourse = null;
+
+  function setSelectedCourse(courseName, courseId) {
+    selectedCourse = courseName;
+    document.getElementById('selectedCourse').value = courseName;
+    document.getElementById('selectedCourseId').value = courseId; // Set the course_id
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const activeCourseElement = document.querySelector('.list-group-item-action.active');
+    if (activeCourseElement) {
+      setSelectedCourse(activeCourseElement.textContent.trim(), activeCourseElement.getAttribute('data-course-id'));
+    }
+  });
+
+  document.getElementById('noteForm').addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    var title = document.getElementById('noteTitle').value;
+    var content = document.getElementById('noteContent').value;
+    var course = document.getElementById('selectedCourse').value;
+    var course_id = document.getElementById('selectedCourseId').value;
+
+    console.log("Course: ", course);
+    console.log("course_id: ", course_id);
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/add_memo', true);
+    xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+        location.reload();
+      }
+    };
+    xhr.send(JSON.stringify({
+      title: title,
+      content: content,
+      course: course,
+      course_id: course_id
+    }));
+  });
+
+  function uploadAudioFile() {
+    var fileInput = document.getElementById('audioFile');
+    var file = fileInput.files[0];
+    if (file) {
+      var formData = new FormData();
+      formData.append('file', file);
+
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/upload', true);
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          var response = JSON.parse(xhr.responseText);
+          if (response.transcript) {
+            document.getElementById('noteContent').value = response.transcript;
+          } else if (response.error) {
+            alert('Error: ' + response.error);
+          }
+        } else {
+          alert('Error uploading file');
+        }
+      };
+      xhr.send(formData);
+    } else {
+      alert('오디오 파일을 업로드해주세요.');
+    }
+  }
+
+  function selectSemester(semester) {
+    fetch('/memo', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ semester: semester })
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          window.location.reload();
+        } else {
+          alert('Failed to update the semester.');
+        }
+      })
+      .catch(error => console.error('Error:', error));
+  }
+
+  function toggleDeleteButton() {
+    var checkedBoxes = document.querySelectorAll('.form-check-input:checked');
+    var deleteButton = document.getElementById('deleteMemoButton');
+    if (checkedBoxes.length > 0) {
+      deleteButton.style.display = 'inline-block';
+    } else {
+      deleteButton.style.display = 'none';
+    }
+  }
+
+  function confirmDeleteMemos() {
+    var checkedBoxes = document.querySelectorAll('.form-check-input:checked');
+    if (checkedBoxes.length > 0) {
+      if (confirm(`체크한 ${checkedBoxes.length}개의 메모를 지울까요?`)) {
+        deleteSelectedMemos();
+      }
+    } else {
+      alert("지울 메모를 선택해주세요.");
+    }
+  }
+
+  function deleteSelectedMemos() {
+    var checkedBoxes = document.querySelectorAll('.form-check-input:checked');
+    var memoIds = [];
+
+    checkedBoxes.forEach(function (box) {
+      var memoId = box.id.split('-')[1];
+      memoIds.push(memoId);
+    });
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/delete_memos', true);
+    xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+        location.reload();
+      }
+    };
+    xhr.send(JSON.stringify({
+      memo_ids: memoIds
+    }));
+  }
+
+
+</script>
+
+{% endblock %}
